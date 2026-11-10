@@ -1,29 +1,123 @@
-# Float Recorder
+# Float Recorder 🎬
 
-A native Apple Silicon Mac screen recorder for macOS 15 or later.
+A native, lightweight floating screen and internal system audio recorder designed exclusively for Apple Silicon Macs running **macOS 15 (Sequoia)** or later.
 
-## Open
+Built entirely with native Apple frameworks (`ScreenCaptureKit`, `AVFoundation`, `SwiftUI`, and `AppKit`) — **zero third-party dependencies** or virtual audio drivers required.
 
-Double-click **Float Recorder.app** in this folder. A floating bar appears, with a menu bar icon as a backup way to reach controls.
+---
 
-- Red circle: start after a three-second countdown. Square: stop and save.
-- Speaker: enable computer audio, including meeting participants and browser videos.
-- Microphone: enable your voice or an external audio input. Choose the device in Settings.
-- Folder: reveal the last saved recording, or open the save folder.
-- Gear: select a display, microphone, storage folder, video quality (720p / 1080p / 4K), frame rate (30 / 60 fps), and format (MP4 / MOV).
-- Circled X: hide the floating bar, cancel the countdown, or quit. Hiding keeps the app and any recording running; use the menu bar icon → Show recorder to restore it. Quitting while recording stops and saves first.
-- Drag the bar by its left handle/background to reposition it. The app's own windows are excluded from recordings.
+## 💻 System Requirements
 
-On the first recording, macOS asks for Screen & System Audio Recording permission. Allow Float Recorder in System Settings → Privacy & Security, then quit and reopen if macOS requests it. Microphone permission is requested only when that option is enabled.
+- **Mac**: Apple Silicon (M1, M2, M3, M4, or later)
+- **OS**: macOS 15.0 (Sequoia) or newer
+- **Permissions**: Screen & System Audio Recording, Microphone (optional)
 
-Defaults: computer audio on, microphone off, files in `~/Movies/Float Recorder`. Output is H.264 in MP4 or MOV, at 30 or 60 fps. Resolution fits within 1280×720, 1920×1080, or 3840×2160 without upscaling; default is 1080p / 30 fps / MP4. Use headphones when recording both audio sources to avoid echo. Protected playback can appear blank or silent. System audio includes other apps and notifications on the Mac, so silence unwanted apps before recording.
+---
 
-Stop and wait for **Saved ✓** before quitting or disconnecting the save drive. Quit saves an active recording before exiting. Pause, editing, webcam overlay, and automatic upload are not included.
+## 📥 Installation
 
-## Build
+Choose whichever option works best for you:
 
-Run `zsh build.sh` from this folder. Requires Apple's Swift compiler / Command Line Tools. The script builds an Apple Silicon app bundle and applies a local ad-hoc signature. No third-party dependencies or virtual audio driver are needed. The app is a local build, not notarized for distribution.
+### Option 1: Download Pre-compiled App (Recommended for Most Users)
 
-## Validation
+No coding or terminal experience needed.
 
-Compilation and launch are checked locally. End-to-end recording with system audio and microphone needs macOS privacy permissions and a manual playback check. To verify: play a short video with headphones, enable the microphone, record for ten seconds while speaking, stop, and use the folder button to open the MP4. Confirm the screen, video audio, and your voice are present.
+1. **Download the app**:
+   Go to the [GitHub Releases page](https://github.com/pollen-chakma/float-recorder/releases/latest) and download `Float-Recorder-macOS.zip`.
+
+2. **Extract & Install**:
+   * Double-click the downloaded `.zip` file to extract `Float Recorder.app`.
+   * Drag `Float Recorder.app` into your **Applications** folder (`/Applications`).
+
+3. **Opening for the first time (macOS Gatekeeper)**:
+   Because this app is independently compiled and not signed with a paid Apple Developer certificate, macOS will display an *"unidentified developer"* or *"cannot verify"* prompt on the first launch.
+   * **To open**: Right-click (or <kbd>Control</kbd>-click) **Float Recorder.app** → click **Open** → then click **Open** in the dialog.
+   * *Alternative*: Go to **System Settings → Privacy & Security**, scroll down to the Security section, and click **Open Anyway**.
+
+---
+
+### Option 2: Build & Compile from Source (For Developers)
+
+If you prefer building directly from the Swift source code:
+
+1. **Ensure you have Apple Command Line Tools installed**:
+   ```bash
+   xcode-select --install
+   ```
+
+2. **Clone the repository**:
+   ```bash
+   git clone https://github.com/pollen-chakma/float-recorder.git
+   cd float-recorder
+   ```
+
+3. **Compile the app**:
+   Run the build script:
+   ```bash
+   zsh build.sh
+   ```
+   *(This uses `swiftc` to compile `Sources/main.swift` and bundles it into `Float Recorder.app` with an ad-hoc local signature in ~5 seconds).*
+
+4. **Launch or install**:
+   ```bash
+   # Launch immediately
+   open "Float Recorder.app"
+
+   # Or install to your Applications folder
+   cp -R "Float Recorder.app" /Applications/
+   ```
+
+---
+
+## 🔒 Required macOS Permissions
+
+On your first recording, macOS will prompt you for permissions:
+
+1. **Screen & System Audio Recording**: Required to capture your display and computer sound.
+   * Go to **System Settings → Privacy & Security → Screen & System Audio Recording**.
+   * Toggle **Float Recorder** to **ON**. (macOS may require you to quit and reopen the app).
+2. **Microphone**: Only requested if you toggle the microphone on to record your voice.
+
+---
+
+## 🚀 How to Use
+
+When opened, a compact floating bar appears on your screen, accompanied by an icon in your macOS menu bar.
+
+### Floating Bar Controls:
+* **🔴 Red Circle**: Starts recording after a 3-second countdown.
+* **⏹ Square**: Stops recording and finishes saving the file.
+* **🔊 Speaker Icon**: Toggles recording computer audio (browser videos, meetings, system sounds).
+* **🎙 Microphone Icon**: Toggles microphone input for voiceover/narration.
+* **📁 Folder Icon**: Reveals your last recording in Finder or opens the recordings folder.
+* **⚙️ Gear Icon**: Opens Settings to configure:
+  * **Display**: Select which monitor to capture (multi-monitor setups).
+  * **Audio Device**: Choose your specific microphone or input device.
+  * **Save Folder**: Defaults to `~/Movies/Float Recorder`.
+  * **Video Quality**: 720p, 1080p, or 4K.
+  * **Frame Rate**: 30 FPS or 60 FPS.
+  * **Format**: MP4 or MOV (H.264).
+* **✖️ Circled X**: Hides the floating bar or quits.
+  * *Note*: If hidden, click the menu bar icon (●) and select **"Show recorder"** to bring it back. Quitting while recording will safely save your video before exiting.
+
+> [!TIP]
+> Use headphones when recording both system audio and microphone simultaneously to avoid audio feedback/echo.
+
+---
+
+## 🛠 Project Structure
+
+```text
+├── Sources/
+│   └── main.swift        # Complete Swift application logic (UI & recording engine)
+├── Info.plist            # macOS app bundle metadata and permission descriptions
+├── build.sh              # Standalone Swift compilation and signing script
+├── .gitignore            # Excludes build caches (.build/) and binaries
+└── README.md             # Project documentation and installation guide
+```
+
+---
+
+## 👤 Author
+
+Developed by **[Pollen Chakma](https://github.com/pollen-chakma)**.
