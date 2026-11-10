@@ -4,3 +4,4 @@
 # Build artifacts and cache (244MB+)
 .build/
 *.app
+*.zip
